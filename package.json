@@ -1,0 +1,14 @@
+{
+  "name": "angular-nestjs-postgres",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "cd db && npm run start && cd ../frontend && npm run build && cd ../backend && npm run start:dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    
+  }
+}
