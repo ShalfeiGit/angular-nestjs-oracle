@@ -14,7 +14,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../../frontend/dist'),
+      rootPath: join(__dirname, '../../frontend/dist/frontend/browser'),
     }),
     TypeOrmModule.forRoot(dataSourceOptions),
     UserModule,
