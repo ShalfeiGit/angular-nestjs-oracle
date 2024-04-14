@@ -1,0 +1,2 @@
+const articleReducer = {};
+export { articleReducer }

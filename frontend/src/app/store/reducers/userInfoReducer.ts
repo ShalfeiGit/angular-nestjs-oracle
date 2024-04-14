@@ -1,0 +1,2 @@
+const userInfoReducer = {};
+export { userInfoReducer }
