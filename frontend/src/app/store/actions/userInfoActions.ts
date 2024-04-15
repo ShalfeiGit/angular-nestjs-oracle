@@ -50,10 +50,10 @@ const updateUserInfoAction = async ({dispatch}: {dispatch: Store['dispatch']}, p
     const {username, ...dataUserInfo} = userInfo
     const response: IAxiosResponse<IUserInfo> = await api({ method: 'put', url: `user/${username}`, data: formData, headers: { 'Content-Type': 'multipart/form-data'} })
     callNotification({
-      type: response.status >= 400 ? 'error' : 'success',
-      message: response.status >= 400 ? response.data as unknown as string : `${response.data.username} was updated`
+      type: response.status && response?.status >= 400 ? 'error' : 'success',
+      message: response.status && response.status >= 400 ? response.data as unknown as string : `${response.data?.username} was updated`
     })
-    if(response.status >= 400){
+    if(response.status && response.status >= 400){
       dispatch(UserInfoActionsByReducer.updateUserInfoAction_rejected({payload: response}));
     }	
     dispatch(UserInfoActionsByReducer.updateUserInfoAction_fulfilled({payload: response}));

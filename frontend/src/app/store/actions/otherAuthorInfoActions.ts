@@ -20,7 +20,7 @@ export const OtherAuthorInfoActionsByReducer = createActionGroup({
 const getOtherAuthorInfoAction = async ({dispatch}: {dispatch: Store['dispatch']}, payload: Pick<IOtherAuthorInfo, 'username'> & INotificationAction & INavigateAction) =>{
   const { username } = payload	
   const response: IAxiosResponse<IUserInfo> = await api({ method: 'get', url: `user/author/${username}` })
-  if(response.status >= 400){
+  if(response.status && response.status >= 400){
     dispatch(OtherAuthorInfoActionsByReducer.getOtherAuthorInfoAction_rejected({payload: response}));
   }	else {
     dispatch(OtherAuthorInfoActionsByReducer.getOtherAuthorInfoAction_fulfilled({payload: response}));

@@ -32,7 +32,7 @@ export interface IAxiosResponse<T> {
 	data: T
 	status: number
 	statusText: string
-  headers: RawAxiosResponseHeaders | AxiosResponseHeaders
+  headers: RawAxiosResponseHeaders | AxiosResponseHeaders 
   config: InternalAxiosRequestConfig<T>
 }
 
@@ -157,6 +157,15 @@ export interface IOtherAuthorInfo {
   age: number;
 	gender: string;
 	avatarUrl: string;
+}
+
+export interface IInitialState {
+	[k:string]: any;
+}
+
+
+export interface DynamicObject {
+	[k:string]: any;
 }
 
 

@@ -64,7 +64,7 @@ const loadArticleAction = async ({dispatch}: {dispatch: Store['dispatch']}, payl
   const { articleId } = payload
   dispatch(ArticleActionsByReducer.loadArticleAction_pending())
   const response: IAxiosResponse<IArticle> & IAxiosErrorResponse = await api({ method: 'get', url: `article/${articleId}` })
-  if(response.status >= 400){
+  if(response.status && response.status >= 400){
     dispatch(ArticleActionsByReducer.loadArticleAction_rejected({payload: response}));
   }	else {
     dispatch(ArticleActionsByReducer.loadArticleAction_fulfilled({payload: response}));
@@ -75,7 +75,7 @@ const loadAllArticlesAction = async ({dispatch}: {dispatch: Store['dispatch']}, 
   const {page, limit} = payload
     dispatch(ArticleActionsByReducer.loadAllArticlesAction_pending())
     const response: IAxiosResponse<IGroupArticle<IArticle>> & IAxiosErrorResponse = await api({ method: 'get', url: `article/global/all?page=${page}&limit=${limit}` })
-    if(response.status >= 400){
+    if(response.status && response.status >= 400){
       dispatch(ArticleActionsByReducer.loadAllArticlesAction_rejected({payload: response}));
     }	else {
       dispatch(ArticleActionsByReducer.loadAllArticlesAction_fulfilled({payload: {
@@ -92,7 +92,7 @@ const loadGroupArticlesAction = async ({dispatch}: {dispatch: Store['dispatch']}
   const {tag, page, limit} = payload
   dispatch(ArticleActionsByReducer.loadGroupArticlesAction_pending())
   const response: IAxiosResponse<IGroupArticle<IArticle>> & IAxiosErrorResponse = await api({ method: 'get', url: `article/group/${tag}?page=${page}&limit=${limit}` })
-  if(response.status >= 400){
+  if(response.status && response.status >= 400){
     dispatch(ArticleActionsByReducer.loadGroupArticlesAction_rejected({payload: response}));
   }	else {
     dispatch(ArticleActionsByReducer.loadGroupArticlesAction_fulfilled({payload: {
@@ -114,7 +114,7 @@ const loadUserArticlesAction = async ({dispatch}: {dispatch: Store['dispatch']},
 	const { username, page, limit } = payload
   dispatch(ArticleActionsByReducer.loadUserArticlesAction_pending());
   const response: IAxiosResponse<IUserArticle<IArticle>> & IAxiosErrorResponse = await api({ method: 'get', url: `article/filter/${username}?page=${page}&limit=${limit}` })
-  if(response.status >= 400){
+  if(response.status && response.status >= 400){
     dispatch(ArticleActionsByReducer.loadUserArticlesAction_rejected({payload: response}));
   }	else {
     dispatch(ArticleActionsByReducer.loadUserArticlesAction_fulfilled({payload:  {
@@ -130,7 +130,7 @@ const loadUserArticlesAction = async ({dispatch}: {dispatch: Store['dispatch']},
 const loadTagOptionsAction = async ({dispatch}: {dispatch: Store['dispatch']}) => {
   dispatch(ArticleActionsByReducer.loadTagOptionsAction_pending());
   const response:IAxiosResponse<ITagOption[]> & IAxiosErrorResponse = await api({ method: 'get', url: 'article/options/tag' })
-  if(response.status >= 400){
+  if(response.status && response.status >= 400){
     dispatch(ArticleActionsByReducer.loadTagOptionsAction_rejected({payload: response}));
   }	else {
     dispatch(ArticleActionsByReducer.loadTagOptionsAction_fulfilled({payload: response}));
@@ -148,10 +148,10 @@ const createArticleAction = async ({dispatch}: {dispatch: Store['dispatch']}, pa
   }
   const response: IAxiosResponse<IArticle> & IAxiosErrorResponse = await api({ method: 'post', url: `article/${username}`, data: {tag, title, content} })
   callNotification({
-    type: response.status >= 400 ? 'error' : 'success',
-    message: response.status >= 400 ? response.data.message : 'Article was created'
+    type: response.status && response.status >= 400 ? 'error' : 'success',
+    message: response.status && response.status >= 400 ? response.data.message : 'Article was created'
   })
-  if(response.status >= 400){
+  if(response.status && response.status >= 400){
     dispatch(ArticleActionsByReducer.createArticleAction_rejected({payload: response}));
   }	else {
     navigate(`/userinfo/${username}?tab=articles-content`)
@@ -193,10 +193,10 @@ const deleteArticleAction = async ({dispatch}: {dispatch: Store['dispatch']}, pa
   const response: IAxiosResponse<IUserArticle<IArticle>> & IAxiosErrorResponse = await api({ method: 'delete', url: `article/${articleId}` })
   const responseUserArticles = await api({ method: 'get', url: `article/filter/${username}?page=1&limit=10` })
   callNotification({
-    type: response.status >= 400 ? 'error' : 'success',
-    message: response.status >= 400 ? response.data.message : 'Article was deleted'
+    type: response.status && response.status >= 400 ? 'error' : 'success',
+    message: response.status && response.status >= 400 ? response.data.message : 'Article was deleted'
   })
-  if(response.status >= 400){
+  if(response.status && response.status >= 400){
     dispatch(ArticleActionsByReducer.deleteArticleAction_rejected({payload: response}));
   }	else {
     dispatch(ArticleActionsByReducer.deleteArticleAction_fulfilled({payload: response}));
