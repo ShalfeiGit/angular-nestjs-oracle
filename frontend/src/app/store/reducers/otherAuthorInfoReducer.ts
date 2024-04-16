@@ -13,7 +13,7 @@ export const initialState: IInitialState = {
   config: null,
 };
 
-export const articleReducer = createReducer(
+export const otherAuthorInfoReducer = createReducer(
   initialState,
   on(OtherAuthorInfoActionsByReducer.getOtherAuthorInfoAction_pending, (state) => {
     return {...state, loading: true };

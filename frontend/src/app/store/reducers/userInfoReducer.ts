@@ -12,7 +12,7 @@ export const initialState: IInitialState = {
 	config: null,
 };
 
-export const articleReducer = createReducer(
+export const userInfoReducer = createReducer(
   initialState,
   on(UserInfoActionsByReducer.updateUserInfoAction_pending, (state) => {
     return {...state, loading: true };

@@ -169,5 +169,12 @@ export interface DynamicObject {
 }
 
 
+export interface AppState {
+	article: DynamicObject,
+	otherAuthorInfo: DynamicObject,
+	userInfo: DynamicObject,
+} 
+
+
 
 
