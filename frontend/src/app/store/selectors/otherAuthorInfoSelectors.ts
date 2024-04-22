@@ -5,4 +5,4 @@ const getOtherAuthorInfoFeature = (state: AppState) => {
   return state.otherAuthorInfo
 }
 
-export const getOtherAuthorInfo = (state: AppState) => createSelector(getOtherAuthorInfoFeature, (otherAuthorInfo: AppState['otherAuthorInfo']) => otherAuthorInfo['data'])
+export const getOtherAuthorInfo = createSelector(getOtherAuthorInfoFeature, (otherAuthorInfo: AppState['otherAuthorInfo']) => otherAuthorInfo['data'])

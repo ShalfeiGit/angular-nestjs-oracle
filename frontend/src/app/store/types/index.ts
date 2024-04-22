@@ -1,4 +1,5 @@
 import { AxiosResponseHeaders, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios'
+import FormData from 'form-data'; 
 
 type NoticeType = "info" | "success" | "error" | "warning" | "loading";
 

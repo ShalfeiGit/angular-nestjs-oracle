@@ -17,7 +17,7 @@ export const initialState: IInitialState = {
 
 export const articleReducer = createReducer(
   initialState,
-  on(ArticleActionsByReducer.loadArticleAction_pending, (state) => {
+  on(ArticleActionsByReducer.loadArticleAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.loadArticleAction_fulfilled, (state, action) => {
