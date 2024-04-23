@@ -14,7 +14,7 @@ export const initialState: IInitialState = {
 
 export const userInfoReducer = createReducer(
   initialState,
-  on(UserInfoActionsByReducer.updateUserInfoAction_pending, (state) => {
+  on(UserInfoActionsByReducer.updateUserInfoAction, (state) => {
     return {...state, loading: true };
   }),
   on(UserInfoActionsByReducer.updateUserInfoAction_fulfilled, (state, action) => {
@@ -43,7 +43,7 @@ export const userInfoReducer = createReducer(
 			loading: false
     };
   }),
-  on(UserInfoActionsByReducer.signInAction_pending, (state) => {
+  on(UserInfoActionsByReducer.signInAction, (state) => {
     return {...state, loading: true };
   }),
   on(UserInfoActionsByReducer.signInAction_fulfilled, (state, action) => {
@@ -79,7 +79,7 @@ export const userInfoReducer = createReducer(
 			loading: false
     };
   }),
-  on(UserInfoActionsByReducer.signUpAction_pending, (state) => {
+  on(UserInfoActionsByReducer.signUpAction, (state) => {
     return {...state, loading: true };
   }),
   on(UserInfoActionsByReducer.signUpAction_fulfilled, (state) => {
@@ -113,10 +113,10 @@ export const userInfoReducer = createReducer(
     };
   }),
   on(UserInfoActionsByReducer.likeArticleAction_fulfilled, (state, action) => {
-    const {user}  = action.payload;
+    const {data}  = action.payload;
     return {
       ...state,
-      data: user,
+      data: data,
 			error: null,
 			loading: false
     };

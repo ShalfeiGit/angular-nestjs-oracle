@@ -8,7 +8,9 @@ import { reducers } from './store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import * as articlesEffects from '@app/store/effects/articleEffects';
+import * as otherAuthorInfoEffects from '@app/store/effects/otherAuthorInfoEffects';
+import * as userInfoEffects from '@app/store/effects/userInfoEffects';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideRouter(routes), provideClientHydration(), provideStore(reducers), provideEffects(articlesEffects), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
+  providers: [provideRouter(routes), provideClientHydration(), provideStore(reducers), provideEffects(articlesEffects, otherAuthorInfoEffects, userInfoEffects), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
 };

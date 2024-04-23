@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.store.dispatch(ArticleActionsByReducer.loadArticleAction({payload: {page: 1, limit: 10}}) )
+    this.store.dispatch(ArticleActionsByReducer.loadAllArticlesAction({payload: {page: 1, limit: 10}}) )
     // this.count$.subscribe((el) => {
     //   debugger
     // })

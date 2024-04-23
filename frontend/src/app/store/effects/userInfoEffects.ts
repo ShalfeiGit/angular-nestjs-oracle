@@ -1,150 +1,199 @@
-// import { Store, createActionGroup, emptyProps, props } from '@ngrx/store';
-// import { 
-//   IArticle,
-//   IAxiosResponse,
-//   IArticleRequestData,
-//   IAdditionalArticleInfo,
-//   INavigateAction,
-//   INotificationAction,
-//   ICallNotificationAction,
-//   IUserInfo,
-//   ILikeArticleResponse,
-//   IFormData,
-//   ISignIn,
-//   ISignUp
-// } from '@app/store/types';
-// import api from '@app/store/api/api';
+import api from '@app/store/api/api';
+import { OtherAuthorInfoActionsByReducer } from '../actions/otherAuthorInfoActions';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { inject } from '@angular/core';
+import { concatMap, from, map, of, switchMap, tap } from 'rxjs';
+import { UserInfoActionsByReducer } from '../actions/userInfoActions';
+import { ICallNotificationAction } from '@app/store/types';
+import { Store } from '@ngrx/store';
 
-// export const UserInfoActionsByReducer = createActionGroup({
-//   source: 'UserInfo',
-//   events: {
-//     updateUserInfoAction_pending: emptyProps(),
-//     updateUserInfoAction_fulfilled: props<{ payload: IAxiosResponse<IUserInfo> }>(),
-//     updateUserInfoAction_rejected: props<{ payload: IAxiosResponse<IUserInfo> }>(),
+export const updateUserInfoAction =  createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(UserInfoActionsByReducer.updateUserInfoAction),
+      switchMap(({payload}) =>{
+        const {openNotification, navigate, formData, ...userInfo} = payload
+        const {username, ...dataUserInfo} = userInfo
+        return from(api({ method: 'put', url: `user/${username}`, data: formData, headers: { 'Content-Type': 'multipart/form-data'} })).pipe(
+          map((response) => {
+            const callNotification = ({type, message}: ICallNotificationAction ) => {
+              openNotification({
+                content: message,
+                type
+              })
+            }
+            callNotification({
+              type: response.status && response.status >= 400 ? 'error' : 'success',
+              message: response.status && response.status >= 400 ? response.data.message : 'Article was deleted'
+            })
+            if(response.status >= 400){
+              return UserInfoActionsByReducer.updateUserInfoAction_rejected({payload: response})
+            }	
+            return UserInfoActionsByReducer.updateUserInfoAction_fulfilled({payload: response})
+          })
+        )
+      })
+    );
+  },
+  { functional: true }
+);
 
-//     signInAction_pending: emptyProps(),
-//     signInAction_fulfilled: props<{ payload: IAxiosResponse<IUserInfo> }>(),
-//     signInAction_rejected: props<{ payload: IAxiosResponse<IUserInfo> }>(),
+export const savePreviewUserAvatarAction = createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(UserInfoActionsByReducer.savePreviewUserAvatarAction),
+      switchMap(({payload}) =>{
+        const {formData, username, cb} = payload
+        return from(api({ method: 'put', url: `user/${username}/avatar`, data: formData, headers: { 'Content-Type': 'multipart/form-data'} })).pipe(
+          tap(() => {
+            if(cb){
+              cb()
+            }
+          })
+        )
+      })
+    );
+  },
+  { functional: true }
+);
 
-//     signUpAction_pending: emptyProps(),
-//     signUpAction_fulfilled: emptyProps(),
-//     signUpAction_rejected: emptyProps(),
+export const deletePreviewUserAvatarAction = createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(UserInfoActionsByReducer.deletePreviewUserAvatarAction),
+      switchMap(({payload}) =>{
+        const {formData,   ...userInfo } = payload
+        return from(api({ method: 'delete', url: `user/${userInfo?.username}/avatar` , data: formData, headers: {  'Content-Type': 'multipart/form-data' } }))
+      })
+    );
+  },
+  { functional: true }
+);
 
-//     resetUserInfoAction_fulfilled: emptyProps(),
+export const signInAction =  createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(UserInfoActionsByReducer.signInAction),
+      switchMap(({payload}) =>{
+        const { openNotification, navigate, ...userInfo} = payload
+        return from(api({ method: 'post', url: 'auth', data: userInfo })).pipe(
+          switchMap((response) => {
+            const callNotification = ({type, message}: ICallNotificationAction ) => {
+              openNotification({
+                content: message,
+                type
+              })
+            }
+            if(response.status >= 400){
+              callNotification({
+                type: 'error',
+                message: response.data.message
+              })
+              return of(UserInfoActionsByReducer.signInAction_rejected({payload: response}))
+            }	else {
+              return of(UserInfoActionsByReducer.signInAction_fulfilled({payload: response})).pipe(
+                tap(() => {
+                  if(navigate){
+                    navigate('/')
+                  }
+                  if(response?.data?.refresh_token){
+                    localStorage.setItem('refresh_token', response.data.refresh_token)
+                  }
+                })
+              )
+            }
+          })
+        )
+      })
+    );
+  },
+  { functional: true }
+);
 
-//     deleteUserInfoAction_fulfilled: emptyProps(),
+export const signUpAction =  createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(UserInfoActionsByReducer.signInAction),
+      switchMap(({payload}) =>{
+        const {openNotification, navigate, ...userInfo} = payload
+        return from(api({ method: 'post', url: 'user', data: userInfo })).pipe(
+          switchMap((response) => {
+            const callNotification = ({type, message}: ICallNotificationAction ) => {
+              openNotification({
+                content: message,
+                type
+              })
+            }
+            callNotification({
+              type: response.status >= 400 ? 'error' : 'success',
+              message: response.status >= 400 ? response.data.message : `${userInfo.username} was created`
+            })
+            if(response.status >= 400){
+              return of(UserInfoActionsByReducer.signUpAction_rejected({payload: response}));
+            }	else {
+              return of(UserInfoActionsByReducer.signUpAction_fulfilled({payload: response})).pipe(
+                tap(() => {
+                  navigate('/signIn')
+                }),
+              )
+            }
+          })
+        )
+      })
+    );
+  },
+  { functional: true }
+);
 
-//     likeArticleAction_fulfilled: props<{ payload: IAxiosResponse<IArticle> & IAdditionalArticleInfo & ILikeArticleResponse }>(),
-//   },
-// });
+export const resetUserInfoAction = createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(UserInfoActionsByReducer.resetUserInfoAction),
+      switchMap(({payload}) =>{
+        const { navigate } = payload
+        return of(UserInfoActionsByReducer.resetUserInfoAction_fulfilled()).pipe(
+          tap(() => {
+            navigate('/');
+            localStorage.clear();
+          })
+        )
+      })
+    );
+  },
+  { functional: true }
+);
 
-// const updateUserInfoAction = async ({dispatch}: {dispatch: Store['dispatch']}, payload: Required<INotificationAction>  & IFormData & INavigateAction & Required<Pick<IArticleRequestData, 'username'>>) => {
-//   const {openNotification, navigate, formData, ...userInfo} = payload
-//     UserInfoActionsByReducer.updateUserInfoAction_pending();
-//     const callNotification = ({type, message}: ICallNotificationAction ) => {
-//       openNotification({
-//         content: message,
-//         type
-//       })
-//     }
-//     const {username, ...dataUserInfo} = userInfo
-//     const response: IAxiosResponse<IUserInfo> = await api({ method: 'put', url: `user/${username}`, data: formData, headers: { 'Content-Type': 'multipart/form-data'} })
-//     callNotification({
-//       type: response.status && response?.status >= 400 ? 'error' : 'success',
-//       message: response.status && response.status >= 400 ? response.data as unknown as string : `${response.data?.username} was updated`
-//     })
-//     if(response.status && response.status >= 400){
-//       dispatch(UserInfoActionsByReducer.updateUserInfoAction_rejected({payload: response}));
-//     }	
-//     dispatch(UserInfoActionsByReducer.updateUserInfoAction_fulfilled({payload: response}));
-// };
+export const deleteUserInfoAction = createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(UserInfoActionsByReducer.deleteUserInfoAction),
+      switchMap(({payload}) =>{
+        const { navigate, username } = payload
+        return from(api({ method: 'delete', url: `user/${username}`}))
+        .pipe(
+          switchMap((response) => {
+            return of(UserInfoActionsByReducer.deleteUserInfoAction_fulfilled()).pipe(
+              tap(() => {
+                navigate('/')
+                localStorage.clear()
+              })
+            )
+          })
+        )
+      })
+    );
+  },
+  { functional: true }
+);
 
-// const savePreviewUserAvatarAction = async (payload: Pick<IUserInfo, 'username'> & IFormData) =>{
-//   const {formData, username, cb} = payload
-//   await api({ method: 'put', url: `user/${username}/avatar`, data: formData, headers: { 'Content-Type': 'multipart/form-data'} })
-//   if(cb){
-//     cb()
-//   }
-// };
-  
-// const deletePreviewUserAvatarAction = async (payload: Pick<IUserInfo, 'username'> & {formData: FormData}) => {
-//   const {formData,   ...userInfo } = payload
-//   await api({ method: 'delete', url: `user/${userInfo?.username}/avatar` , data: formData, headers: {  'Content-Type': 'multipart/form-data' } })
-// };
-
-// const signInAction = async ({dispatch}: {dispatch: Store['dispatch']}, payload: ISignIn & Required<INotificationAction> & INavigateAction) => {
-//   const { openNotification, navigate, ...userInfo} = payload
-//   const callNotification = ({type, message}: ICallNotificationAction ) => {
-//     openNotification({
-//       content: message,
-//       type
-//     })
-//   }
-//   const response = await api({ method: 'post', url: 'auth', data: userInfo })
-//   if(response.status >= 400){
-//     callNotification({
-//       type: 'error',
-//       message: response.data.message
-//     })
-//     dispatch(UserInfoActionsByReducer.signInAction_rejected({payload: response}));
-//   }	else {
-//     if(navigate){
-//       navigate('/')
-//     }
-//   }
-//   if(response?.data?.refresh_token){
-//     localStorage.setItem('refresh_token', response.data.refresh_token)
-//   }
-//   dispatch(UserInfoActionsByReducer.signInAction_fulfilled({payload: response}));
-// };
-
-// const signUpAction = async({dispatch}: {dispatch: Store['dispatch']}, payload: ISignUp & Required<INotificationAction> & Required<INavigateAction>) =>{
-//   const {openNotification, navigate, ...userInfo} = payload
-//   const callNotification = ({type, message}: ICallNotificationAction ) => {
-//     openNotification({
-//       content: message,
-//       type
-//     })
-//   }
-//   const response = await api({ method: 'post', url: 'user', data: userInfo })
-//   callNotification({
-//     type: response.status >= 400 ? 'error' : 'success',
-//     message: response.status >= 400 ? response.data.message : `${userInfo.username} was created`
-//   })
-//   if(response.status >= 400){
-//     dispatch(UserInfoActionsByReducer.signInAction_rejected({payload: response}));
-//   }	else {
-//     dispatch(UserInfoActionsByReducer.signInAction_fulfilled({payload: response}));
-//     navigate('/signIn')
-//   }
-// };  
-
-// const resetUserInfoAction = async ({dispatch}: {dispatch: Store['dispatch']}, payload: Required<INavigateAction>) => {
-//   const { navigate } = payload
-//   navigate('/')
-//   localStorage.clear()
-//   dispatch(UserInfoActionsByReducer.resetUserInfoAction_fulfilled());
-// };
-
-// const deleteUserInfoAction = async({dispatch}: {dispatch: Store['dispatch']}, payload: Pick<IUserInfo, 'username'> & Required<INavigateAction>) => {
-//   const { navigate, ...userInfo } = payload
-//   const response = await api({ method: 'delete', url: `user/${userInfo?.username}` })
-//   navigate('/')
-//   localStorage.clear()
-//   dispatch(UserInfoActionsByReducer.deleteUserInfoAction_fulfilled());
-// };
-
-// const likeArticleByUserAction = async({dispatch}: {dispatch: Store['dispatch']}, payload: IAxiosResponse<IUserInfo>) => {
-//   dispatch(UserInfoActionsByReducer.updateUserInfoAction_fulfilled({payload}));
-// };
-  
-
-// export const UserInfoActions = {
-//   updateUserInfoAction,
-//   savePreviewUserAvatarAction,
-//   deletePreviewUserAvatarAction,
-//   signInAction,
-//   signUpAction,
-//   resetUserInfoAction,
-//   likeArticleByUserAction,
-// }
+export const likeArticleByUserAction = createEffect(
+  (actions$ = inject(Actions), store = inject(Store)) => {
+    return actions$.pipe(
+      ofType(UserInfoActionsByReducer.likeArticleAction),
+      map(({payload}) =>{
+        return UserInfoActionsByReducer.updateUserInfoAction_fulfilled({payload})
+      })
+    );
+  },
+  { functional: true }
+);

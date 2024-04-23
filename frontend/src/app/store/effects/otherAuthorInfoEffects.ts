@@ -1,32 +1,26 @@
-// import { Store, createActionGroup, emptyProps, props } from '@ngrx/store';
-// import { 
-//   IAxiosResponse,
-//   INavigateAction,
-//   INotificationAction,
-//   IUserInfo,
-//   IOtherAuthorInfo
-// } from '@app/store/types';
-// import api from '@app/store/api/api';
+import api from '@app/store/api/api';
+import { OtherAuthorInfoActionsByReducer } from '../actions/otherAuthorInfoActions';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { inject } from '@angular/core';
+import { from, map, switchMap } from 'rxjs';
 
-// export const OtherAuthorInfoActionsByReducer = createActionGroup({
-//   source: 'OtherAuthorInfo',
-//   events: {
-//     getOtherAuthorInfoAction_pending: emptyProps(),
-//     getOtherAuthorInfoAction_rejected: props<{ payload: IAxiosResponse<IOtherAuthorInfo> }>(),
-//     getOtherAuthorInfoAction_fulfilled: props<{ payload: IAxiosResponse<IOtherAuthorInfo> }>(),
-//   },
-// });
-
-// const getOtherAuthorInfoAction = async ({dispatch}: {dispatch: Store['dispatch']}, payload: Pick<IOtherAuthorInfo, 'username'> & INotificationAction & INavigateAction) =>{
-//   const { username } = payload	
-//   const response: IAxiosResponse<IUserInfo> = await api({ method: 'get', url: `user/author/${username}` })
-//   if(response.status && response.status >= 400){
-//     dispatch(OtherAuthorInfoActionsByReducer.getOtherAuthorInfoAction_rejected({payload: response}));
-//   }	else {
-//     dispatch(OtherAuthorInfoActionsByReducer.getOtherAuthorInfoAction_fulfilled({payload: response}));
-//   }
-// }
-
-// export const OtherAuthorInfoActions = {
-//   getOtherAuthorInfoAction,
-// }
+export const getOtherAuthorInfoAction =  createEffect(
+  (actions$ = inject(Actions)) => {
+    return actions$.pipe(
+      ofType(OtherAuthorInfoActionsByReducer.getOtherAuthorInfoAction),
+      switchMap(({payload}) =>{
+        const { username } = payload
+        return from(api({ method: 'get', url: `user/author/${username}` })).pipe(
+          map((response) => {
+            if(response.status >= 400){
+              return OtherAuthorInfoActionsByReducer.getOtherAuthorInfoAction_rejected({ payload: response })
+            }	else {
+              return OtherAuthorInfoActionsByReducer.getOtherAuthorInfoAction_fulfilled({ payload: response})
+            }
+          })
+        )
+      })
+    );
+  },
+  { functional: true }
+);

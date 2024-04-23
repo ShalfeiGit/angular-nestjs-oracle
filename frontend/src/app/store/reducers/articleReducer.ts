@@ -46,7 +46,7 @@ export const articleReducer = createReducer(
       loading: false,
     };
   }),
-  on(ArticleActionsByReducer.loadAllArticlesAction_pending, (state) => {
+  on(ArticleActionsByReducer.loadAllArticlesAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.loadAllArticlesAction_fulfilled, (state, action) => {
@@ -86,7 +86,7 @@ export const articleReducer = createReducer(
       loading: false
     };
   }),
-  on(ArticleActionsByReducer.loadGroupArticlesAction_pending, (state) => {
+  on(ArticleActionsByReducer.loadGroupArticlesAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.loadGroupArticlesAction_fulfilled, (state, action) => {
@@ -131,7 +131,7 @@ export const articleReducer = createReducer(
       ...(state['groupArticles'] ?? []).filter((groupArticle: DynamicObject) => groupArticle['tag'] !== tag),
     ] };
   }),
-  on(ArticleActionsByReducer.loadUserArticlesAction_pending, (state) => {
+  on(ArticleActionsByReducer.loadUserArticlesAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.loadUserArticlesAction_fulfilled, (state, action) => {
@@ -170,7 +170,7 @@ export const articleReducer = createReducer(
       loading: false
     }
   }),
-  on(ArticleActionsByReducer.loadTagOptionsAction_pending, (state) => {
+  on(ArticleActionsByReducer.loadTagOptionsAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.loadTagOptionsAction_fulfilled, (state, action) => {
@@ -199,7 +199,7 @@ export const articleReducer = createReducer(
 			config: config
     };
   }),
-  on(ArticleActionsByReducer.createArticleAction_pending, (state) => {
+  on(ArticleActionsByReducer.createArticleAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.createArticleAction_fulfilled, (state, action) => {
@@ -228,7 +228,7 @@ export const articleReducer = createReducer(
 			loading: false
     };
   }),
-  on(ArticleActionsByReducer.updateArticleAction_pending, (state) => {
+  on(ArticleActionsByReducer.updateArticleAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.updateArticleAction_fulfilled, (state, action) => {
@@ -257,7 +257,7 @@ export const articleReducer = createReducer(
 			loading: false
       };
   }),
-  on(ArticleActionsByReducer.deleteArticleAction_pending, (state) => {
+  on(ArticleActionsByReducer.deleteArticleAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.deleteArticleAction_fulfilled, (state, action) => {
@@ -298,7 +298,7 @@ export const articleReducer = createReducer(
 			loading: false
       };
   }),
-  on(ArticleActionsByReducer.likeArticleAction_pending, (state) => {
+  on(ArticleActionsByReducer.likeArticleAction, (state) => {
     return {...state, loading: true };
   }),
   on(ArticleActionsByReducer.likeArticleAction_fulfilled, (state, action) => {
