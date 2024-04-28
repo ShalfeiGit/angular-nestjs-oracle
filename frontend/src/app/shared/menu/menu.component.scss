@@ -1,0 +1,24 @@
+@import '@app/app.component.scss';
+
+.menu{
+  font-weight: bold;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  font-size: 22px;
+  &__button, &__button .ant-typography{
+    font-weight: bold;
+    font-size: 22px;
+    margin-left: 10px;
+    padding-right: 20px;
+    color: $blue-color;
+  }
+  &__login{
+    display: flex;
+    justify-content: flex-end;
+  }
+  &__greetings{
+    font-size: 12px;
+    margin-left: 16px;
+  }
+}
+

@@ -1,3 +1,4 @@
+import { NavigationExtras } from '@angular/router';
 import { AxiosResponseHeaders, InternalAxiosRequestConfig, RawAxiosResponseHeaders } from 'axios'
 import FormData from 'form-data'; 
 
@@ -100,7 +101,7 @@ export interface INotification {
 }
 
 export interface INavigateAction {
-	navigate?: (data: string) => void
+	navigate?: (commands: any[], extras?: NavigationExtras | undefined) => Promise<boolean>
 }
 
 export interface INotificationAction {

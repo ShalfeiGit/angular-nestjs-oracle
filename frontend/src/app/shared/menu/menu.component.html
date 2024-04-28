@@ -1,1 +1,27 @@
-<p>menu works!</p>
+<div class="menu">
+  <div nz-row nzJustify="end">
+    <div nz-col nzSpan="1"></div>
+    <div nz-col nzSpan="3">
+      <a class="menu__button" nzType="link" (click)="handleRedirectHome()" >
+        <span nz-icon nzType="rocket" nzTheme="twotone" ></span>
+        <span nz-typography>Startup</span>
+      </a>
+    </div>
+    <div nz-col nzSpan="5"></div>
+    <div nz-col nzSpan="3"></div>
+    <div nz-col nzSpan="3"></div>
+    <div nz-col nzSpan="9" class="menu__login">
+      <div *ngIf="userInfo$ | async; else elseBlock">
+        <a #redirectUserInfoModal class="menu__button" nzType="link" title="User info" (click)="handleRedirectUserInfoModal(userInfo$)">
+          <nz-avatar [nzSrc]="(avatarUrl$ | async) || ''" 
+          /><span class="menu__greetings">Hi, {{username$ | async}}</span>
+        </a>
+      </div>
+      <ng-template #elseBlock>
+        <a class="menu__button" nzType="link" title="Sign in" (click)="handleRedirectSignInModal()">
+          <span  nz-icon nzType="login" nzTheme="outline" ></span>
+        </a>
+      </ng-template>
+    </div>
+  </div>
+</div>
