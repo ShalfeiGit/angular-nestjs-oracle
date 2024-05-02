@@ -1,12 +1,10 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, Directive, Pipe } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet,],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

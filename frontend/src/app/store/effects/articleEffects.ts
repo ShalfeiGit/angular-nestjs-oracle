@@ -146,7 +146,7 @@ export const createArticleAction =  createEffect(
               return of(ArticleActionsByReducer.createArticleAction_rejected({payload: response}))
             }	else {
               return of(ArticleActionsByReducer.createArticleAction_fulfilled({payload: response})).pipe(
-                tap(() => { navigate(`/userinfo/${username}?tab=articles-content`)})
+                tap(() => { navigate([`/userinfo/${username}?tab=articles-content`])})
               )
             }
           }),
@@ -179,7 +179,7 @@ export const updateArticleAction =  createEffect(
               return of(ArticleActionsByReducer.updateArticleAction_rejected({payload: response}))
             }	else {
               return of(ArticleActionsByReducer.updateArticleAction_fulfilled({payload: response})).pipe(
-                tap(() => { navigate(`/userinfo/${username}?tab=articles-content`) })
+                tap(() => { navigate([`/userinfo/${username}?tab=articles-content`]) })
               )
             }
           })

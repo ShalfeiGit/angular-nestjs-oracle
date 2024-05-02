@@ -1,1 +1,8 @@
-<p>footer works!</p>
+<div *ngIf="isShowFooter">
+  <div class="footer">
+    <div class="footer__wrapper">
+      <span nz-typography class="footer__text" nz-typography>Copyright &copy;{{year}} Designed by Valentin Zadorozhniy{{' '}}</span>
+      <a href="https://t.me/Shalfei"><img class="footer__icon" src="assets/svg/telegramm.svg"></a>
+    </div>
+  </div>
+</div>

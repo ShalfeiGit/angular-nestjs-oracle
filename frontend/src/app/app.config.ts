@@ -17,6 +17,22 @@ import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
 
+import {
+  StepBackwardOutline,
+  CaretLeftOutline,
+  SettingOutline
+} from '@ant-design/icons-angular/icons';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { IconDefinition } from '@ant-design/icons-angular';
+
+const icons: IconDefinition[] = [
+  StepBackwardOutline,
+  CaretLeftOutline,
+  SettingOutline
+];
+
+NzIconModule.forRoot(icons)
+
 registerLocaleData(en);
 
 export const appConfig: ApplicationConfig = {

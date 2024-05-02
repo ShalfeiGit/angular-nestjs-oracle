@@ -48,8 +48,8 @@ const  makeRequest = async ({ method, url, data = null, responseType = 'json' }:
 		}
 		return JSON.parse(JSON.stringify(err.response ?? {}) )
 	})
-
-	return JSON.parse(JSON.stringify(response ?? {}))
+	const currentResponse = response ? JSON.parse(JSON.stringify(response ?? {})) : {}
+	return currentResponse
 }
 
 

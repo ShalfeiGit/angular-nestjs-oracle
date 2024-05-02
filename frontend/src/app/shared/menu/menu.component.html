@@ -12,7 +12,7 @@
     <div nz-col nzSpan="3"></div>
     <div nz-col nzSpan="9" class="menu__login">
       <div *ngIf="userInfo$ | async; else elseBlock">
-        <a #redirectUserInfoModal class="menu__button" nzType="link" title="User info" (click)="handleRedirectUserInfoModal(userInfo$)">
+        <a class="menu__button" nzType="link" title="User info" (click)="handleRedirectUserInfoModal(userInfo$)">
           <nz-avatar [nzSrc]="(avatarUrl$ | async) || ''" 
           /><span class="menu__greetings">Hi, {{username$ | async}}</span>
         </a>

@@ -94,7 +94,7 @@ export const signInAction =  createEffect(
               return of(UserInfoActionsByReducer.signInAction_fulfilled({payload: response})).pipe(
                 tap(() => {
                   if(navigate){
-                    navigate('/')
+                    navigate(['/'])
                   }
                   if(response?.data?.refresh_token){
                     localStorage.setItem('refresh_token', response.data.refresh_token)
@@ -133,7 +133,7 @@ export const signUpAction =  createEffect(
             }	else {
               return of(UserInfoActionsByReducer.signUpAction_fulfilled({payload: response})).pipe(
                 tap(() => {
-                  navigate('/signIn')
+                  navigate(['/signIn'])
                 }),
               )
             }
@@ -153,7 +153,7 @@ export const resetUserInfoAction = createEffect(
         const { navigate } = payload
         return of(UserInfoActionsByReducer.resetUserInfoAction_fulfilled()).pipe(
           tap(() => {
-            navigate('/');
+            navigate(['/']);
             localStorage.clear();
           })
         )
@@ -174,7 +174,7 @@ export const deleteUserInfoAction = createEffect(
           switchMap((response) => {
             return of(UserInfoActionsByReducer.deleteUserInfoAction_fulfilled()).pipe(
               tap(() => {
-                navigate('/')
+                navigate(['/'])
                 localStorage.clear()
               })
             )

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
@@ -11,11 +11,12 @@ import { getUserInfo } from '@app/store/selectors/userInfoSelectors';
 import { AppState, INotification, IUserInfo } from '@app/store/types';
 import { AsyncPipe, NgIf, NgTemplateOutlet } from '@angular/common';
 import { UserInfoActionsByReducer } from '@app/store/actions/userInfoActions';
+import { CommonModule, DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [NzGridModule, NzButtonModule, RouterModule, NzTypographyModule, NzIconModule, AsyncPipe, NzAvatarModule, NgIf, NgTemplateOutlet ],
+  imports: [NzGridModule, NzButtonModule, RouterModule, NzTypographyModule, NzIconModule, AsyncPipe, NzAvatarModule, NgIf, NgTemplateOutlet, CommonModule ],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss'
 })
@@ -27,25 +28,29 @@ export class MenuComponent implements OnInit {
   @Input() message!: string;
   @Input() openNotification!: (data: INotification) => void;
 
-  constructor(private store: Store<AppState>, private router: Router) { 
+  constructor(private store: Store<AppState>, private router: Router, @Inject(DOCUMENT) private document: Document) { 
     this.userInfo$ = this.store.select(getUserInfo);
-    this.avatarUrl$ = this.userInfo$.pipe(map(user => user.avatarUrl))
+    this.avatarUrl$ = this.userInfo$.pipe(map(user => user.avatarUrl 
+      ? `http://localhost:3000${user?.avatarUrl}` 
+		  : `https://api.dicebear.com/7.x/miniavs/svg?seed=${user?.id}`
+    ))
     this.username$ = this.userInfo$.pipe(map(user => user.username))
   }
 
   ngOnInit(): void {
-    const refresh_token = localStorage.getItem('refresh_token') ?? undefined
-    this.userInfo$.pipe(concatMap(user => of(!user?.username && refresh_token)), take(1)).subscribe(user => {
-      this.store.dispatch(UserInfoActionsByReducer.signInAction({
-        payload: {
-          openNotification:this.openNotification,
-          navigate: this.router.navigate,
-          refresh_token,
-        }
-      })) 
+    const refresh_token = this.document.defaultView?.localStorage?.getItem('refresh_token') ?? undefined
+    this.userInfo$.pipe(concatMap(user => of(user)), take(1)).subscribe(user => {
+      if(!user?.username && refresh_token){
+        this.store.dispatch(UserInfoActionsByReducer.signInAction({
+          payload: {
+            openNotification:this.openNotification,
+            navigate: this.router.navigate,
+            refresh_token,
+          }
+        })) 
+      }
     })
   }
-
 
   handleRedirectHome(){
 		this.router.navigate(['/home']);
@@ -63,9 +68,6 @@ export class MenuComponent implements OnInit {
       });
     })
 	}
+}
 
-}
-function mapAll(): import("rxjs").OperatorFunction<IUserInfo, unknown> {
-  throw new Error('Function not implemented.');
-}
 
